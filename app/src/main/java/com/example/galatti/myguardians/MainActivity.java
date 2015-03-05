@@ -65,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
     public static class MainFragment extends Fragment {
         private View rootView;
         private Activity activity;
-        private CustomListAdapter adapter;
+        private GuardianListAdapter adapter;
         private ArrayList guardians;
         private ProgressBar spinner;
 
@@ -92,36 +92,49 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
 
-            initialiseList();
+
+            initialiseGuardList();
 
             spinner = (ProgressBar)rootView.findViewById(R.id.progressBar);
 
             return rootView;
         }
 
-        private void initialiseList() {
+        private void initialiseGuardList() {
             guardians = new ArrayList<Guardian>();
+
             for (int i = 0; i <3; i++) {
                 Guardian guardian = new Guardian();
-                guardian.setGuardianClass("Class");
-                guardian.setLevel("Level");
-                guardian.setTimePlayed("0 days");
+                guardian.setGuardianClass("No Class");
+                guardian.setLevel("Level 0");
+                guardian.setTimePlayed("0 hours played");
                 guardians.add(guardian);
             }
-
-            adapter = new CustomListAdapter(activity, guardians);
+            adapter = new GuardianListAdapter(activity, guardians);
             ListView lv1 = (ListView) rootView.findViewById(R.id.listViewGuardians);
             lv1.setAdapter(adapter);
+        }
+
+        private void resetGuardList() {
+            for (int i = 0; i <3; i++) {
+                Guardian guardian = (Guardian) guardians.get(i);
+                guardian.setGuardianClass("No Class");
+                guardian.setLevel("Level 0");
+                guardian.setTimePlayed("0 hours played");
+                guardians.set(i, guardian);
+            }
         }
 
         private class AsyncTaskParseJson extends AsyncTask<String, String, String> {
 
             final String TAG = "AsyncTaskParseJson.java";
+            String membershipId = null;
 
 
             @Override
             protected void onPreExecute() {
                 spinner.setVisibility(View.VISIBLE);
+                membershipId = null;
             }
 
             @Override
@@ -129,7 +142,10 @@ public class MainActivity extends ActionBarActivity {
 
                 String psnId = arg0[0];
                 if (psnId!= null && psnId.length() > 0) {
-                    String membershipId = getMembershipId(psnId.trim());
+                    Boolean isSand = psnId.trim().equalsIgnoreCase("sandman_br");
+                    if (!isSand.booleanValue()) {
+                        membershipId = getMembershipId(psnId.trim());
+                    }
                     if (membershipId!= null) {
                         getGuardians(membershipId);
                     }
@@ -188,15 +204,55 @@ public class MainActivity extends ActionBarActivity {
 
 
                     dataJsonArr = data.getJSONArray("characters");
-
+                    Guardian guardian;
+                    JSONObject character;
+                    JSONObject characterBase;
+                    String token;
+                    Long hash;
+                    String guardianClass;
+                    Long timePlayed;
 
                     for (int i = 0; i < dataJsonArr.length(); i++) {
 
-                        JSONObject characters = dataJsonArr.getJSONObject(i);
+                        guardianClass= "";
+                        character = dataJsonArr.getJSONObject(i);
 
                         // show the values in our logcat
-                        JSONObject characterBase = characters.getJSONObject("characterBase");
+                        characterBase = character.getJSONObject("characterBase");
                         Log.e(TAG, "characterId: " + characterBase.getString("characterId"));
+
+                        guardian = (Guardian)guardians.get(i);
+
+                        token = characterBase.getString("raceHash");
+                        if (token != null) {
+                            hash = new Long(token);
+                            guardianClass = guardianClass + Guardian.getTerm(hash) + " ";
+                        }
+
+                        token = characterBase.getString("genderHash");
+                        if (token != null) {
+                            hash = new Long(token);
+                            guardianClass = guardianClass + Guardian.getTerm(hash) + " ";
+                        }
+
+                        token = characterBase.getString("classHash");
+                        if (token != null) {
+                            hash = new Long(token);
+                            guardianClass = guardianClass + Guardian.getTerm(hash);
+                        }
+
+                        guardian.setGuardianClass(guardianClass);
+
+                        guardian.setLevel("Level " + characterBase.getString("powerLevel"));
+
+                        token = characterBase.getString("minutesPlayedTotal");
+                        if (token != null) {
+                            timePlayed = new Long(token);
+                            timePlayed = timePlayed / 60;
+                            guardian.setTimePlayed("Played " + timePlayed.toString() + " hours" );
+                        }
+
+                        guardians.set(i, guardian);
                     }
 
                 } catch (JSONException e) {
@@ -206,11 +262,10 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(String strFromDoInBg) {
-                Guardian guardian = (Guardian)guardians.get(0);
-                guardian.setGuardianClass("Hunter");
-                guardians.set(0, guardian);
+                if(membershipId == null) {
+                    resetGuardList();
+                }
                 adapter.upDateEntries(guardians);
-
                 spinner.setVisibility(View.GONE);
 
             }

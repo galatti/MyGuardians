@@ -12,11 +12,11 @@ import java.util.ArrayList;
 /**
  * Created by Rodrigo Galatti on 05/03/2015.
  */
-public class CustomListAdapter extends BaseAdapter {
+public class GuardianListAdapter extends BaseAdapter {
     private ArrayList<Guardian> guardians;
     private LayoutInflater layoutInflater;
 
-    public CustomListAdapter(Context aContext, ArrayList<Guardian> guardians) {
+    public GuardianListAdapter(Context aContext, ArrayList<Guardian> guardians) {
         this.guardians = guardians;
         layoutInflater = LayoutInflater.from(aContext);
     }
