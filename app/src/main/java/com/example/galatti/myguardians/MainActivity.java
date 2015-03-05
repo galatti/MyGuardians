@@ -8,7 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -17,9 +18,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // we will using AsyncTask during parsing
-        new AsyncTaskParseJson().execute();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -63,7 +61,19 @@ public class MainActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            TextView  textview = (TextView) rootView.findViewById(R.id.helloWorld);
+            final EditText editTextPsnId = (EditText ) rootView.findViewById(R.id.editTextPsnId);
+
+            Button buttonGo = (Button) rootView.findViewById(R.id.buttonGo);
+            buttonGo.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    String psnId = editTextPsnId.getText().toString();
+
+                    if (psnId != null) {
+                        new AsyncTaskParseJson().execute(psnId);
+                    }
+
+                }
+            });
             return rootView;
         }
     }

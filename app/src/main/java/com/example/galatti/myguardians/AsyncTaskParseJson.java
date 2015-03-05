@@ -21,9 +21,13 @@ public class AsyncTaskParseJson extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... arg0) {
 
-        String membershipId = getMembershipId("sandman_br");
-
-        getGuardians(membershipId);
+        String psnId = arg0[0];
+        if (psnId!= null && psnId.length() > 0) {
+            String membershipId = getMembershipId(psnId.trim());
+            if (membershipId!= null) {
+                getGuardians(membershipId);
+            }
+        }
 
         return null;
     }
