@@ -1,8 +1,11 @@
 package com.example.galatti.myguardians;
 
+import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -21,7 +32,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new MainFragment())
                     .commit();
         }
     }
@@ -51,15 +62,21 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class MainFragment extends Fragment {
+        private View rootView;
+        private Activity activity;
+        private CustomListAdapter adapter;
+        private ArrayList guardians;
+        private ProgressBar spinner;
 
-        public PlaceholderFragment() {
+        public MainFragment() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            activity= this.getActivity();
 
             final EditText editTextPsnId = (EditText ) rootView.findViewById(R.id.editTextPsnId);
 
@@ -74,7 +91,129 @@ public class MainActivity extends ActionBarActivity {
 
                 }
             });
+
+            initialiseList();
+
+            spinner = (ProgressBar)rootView.findViewById(R.id.progressBar);
+
             return rootView;
+        }
+
+        private void initialiseList() {
+            guardians = new ArrayList<Guardian>();
+            for (int i = 0; i <3; i++) {
+                Guardian guardian = new Guardian();
+                guardian.setGuardianClass("Class");
+                guardian.setLevel("Level");
+                guardian.setTimePlayed("0 days");
+                guardians.add(guardian);
+            }
+
+            adapter = new CustomListAdapter(activity, guardians);
+            ListView lv1 = (ListView) rootView.findViewById(R.id.listViewGuardians);
+            lv1.setAdapter(adapter);
+        }
+
+        private class AsyncTaskParseJson extends AsyncTask<String, String, String> {
+
+            final String TAG = "AsyncTaskParseJson.java";
+
+
+            @Override
+            protected void onPreExecute() {
+                spinner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected String doInBackground(String... arg0) {
+
+                String psnId = arg0[0];
+                if (psnId!= null && psnId.length() > 0) {
+                    String membershipId = getMembershipId(psnId.trim());
+                    if (membershipId!= null) {
+                        getGuardians(membershipId);
+                    }
+                }
+
+                return null;
+            }
+
+            private String getMembershipId(String id) {
+
+                String membershipId = null;
+
+                String yourJsonStringUrl = "http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/2/" + id;
+
+                JSONArray dataJsonArr;
+
+                try {
+
+                    // instantiate our json parser
+                    JsonParser jParser = new JsonParser();
+
+                    // get json string from url
+                    JSONObject json = jParser.getJSONFromUrl(yourJsonStringUrl);
+
+                    dataJsonArr = json.getJSONArray("Response");
+                    JSONObject member = dataJsonArr.getJSONObject(0);
+                    membershipId = member.getString("membershipId");
+
+                    Log.e(TAG, "membershipId: " + membershipId);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return membershipId;
+            }
+
+            private void getGuardians(String membershipId) {
+
+                String yourJsonStringUrl = "http://www.bungie.net/Platform/Destiny/2/Account/" + membershipId;
+
+                JSONArray dataJsonArr;
+
+                try {
+
+                    // instantiate our json parser
+                    JsonParser jParser = new JsonParser();
+
+                    // get json string from url
+                    JSONObject json = jParser.getJSONFromUrl(yourJsonStringUrl);
+                    //Log.e(TAG, "*** json  *** = \n" + json.toString(3));
+                    JSONObject response = json.getJSONObject("Response");
+                    //Log.e(TAG, "*** response *** = \n" + response.toString(3));
+                    JSONObject data = response.getJSONObject("data");
+                    //Log.e(TAG, "*** data *** = \n" + data.toString(3));
+
+
+                    dataJsonArr = data.getJSONArray("characters");
+
+
+                    for (int i = 0; i < dataJsonArr.length(); i++) {
+
+                        JSONObject characters = dataJsonArr.getJSONObject(i);
+
+                        // show the values in our logcat
+                        JSONObject characterBase = characters.getJSONObject("characterBase");
+                        Log.e(TAG, "characterId: " + characterBase.getString("characterId"));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String strFromDoInBg) {
+                Guardian guardian = (Guardian)guardians.get(0);
+                guardian.setGuardianClass("Hunter");
+                guardians.set(0, guardian);
+                adapter.upDateEntries(guardians);
+
+                spinner.setVisibility(View.GONE);
+
+            }
         }
     }
 }
