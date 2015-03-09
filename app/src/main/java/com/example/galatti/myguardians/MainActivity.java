@@ -106,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
             for (int i = 0; i <3; i++) {
                 Guardian guardian = new Guardian();
                 guardian.setGuardianClass("No Class");
-                guardian.setLevel("Level 0");
+                guardian.setLevel("No Light Level");
                 guardian.setTimePlayed("0 hours played");
                 guardians.add(guardian);
             }
@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
             for (int i = 0; i <3; i++) {
                 Guardian guardian = (Guardian) guardians.get(i);
                 guardian.setGuardianClass("No Class");
-                guardian.setLevel("Level 0");
+                guardian.setLevel("No Light Level");
                 guardian.setTimePlayed("0 hours played");
                 guardians.set(i, guardian);
             }
@@ -135,6 +135,7 @@ public class MainActivity extends ActionBarActivity {
             protected void onPreExecute() {
                 spinner.setVisibility(View.VISIBLE);
                 membershipId = null;
+                resetGuardList();
             }
 
             @Override
@@ -243,7 +244,20 @@ public class MainActivity extends ActionBarActivity {
 
                         guardian.setGuardianClass(guardianClass);
 
-                        guardian.setLevel("Level " + characterBase.getString("powerLevel"));
+                        token = characterBase.getString("powerLevel");
+
+                        if (token != null) {
+                            Integer level = new Integer(token);
+                            if (level != null) {
+                                if (level < 1) {
+                                    guardian.setLevel("No Light Level");
+                                } else {
+                                    guardian.setLevel("Light Level " + level.toString());
+                                }
+                            }
+                        }
+
+
 
                         token = characterBase.getString("minutesPlayedTotal");
                         if (token != null) {
@@ -262,9 +276,6 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(String strFromDoInBg) {
-                if(membershipId == null) {
-                    resetGuardList();
-                }
                 adapter.upDateEntries(guardians);
                 spinner.setVisibility(View.GONE);
 
