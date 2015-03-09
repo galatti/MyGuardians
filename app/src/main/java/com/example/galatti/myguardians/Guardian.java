@@ -19,25 +19,25 @@ public class Guardian {
 
     static {
         Map<Long, String> aMap = new HashMap<Long, String>();
-        aMap.put(159615086l, "glimmer");
-        aMap.put(1415355184l, "crucible marks");
-        aMap.put(1415355173l, "vanguard marks");
-        aMap.put(898834093l, "exo");
-        aMap.put(3887404748l, "human");
-        aMap.put(2803282938l, "awoken");
-        aMap.put(3111576190l, "male");
-        aMap.put(2204441813l, "female");
-        aMap.put(671679327l, "hunter");
-        aMap.put(3655393761l, "titan");
-        aMap.put(2271682572l, "warlock");
+        aMap.put(159615086l, "Glimmer");
+        aMap.put(1415355184l, "Crucible Marks");
+        aMap.put(1415355173l, "Vanguard Marks");
+        aMap.put(898834093l, "Exo");
+        aMap.put(3887404748l, "Human");
+        aMap.put(2803282938l, "Awoken");
+        aMap.put(3111576190l, "Male");
+        aMap.put(2204441813l, "Female");
+        aMap.put(671679327l, "Hunter");
+        aMap.put(3655393761l, "Titan");
+        aMap.put(2271682572l, "Warlock");
         aMap.put(3871980777l, "new monarchy");
-        aMap.put(529303302l, "cryptarch");
-        aMap.put(2161005788l, "iron banner");
-        aMap.put(452808717l, "queen");
-        aMap.put(3233510749l, "vanguard");
-        aMap.put(1357277120l, "crucible");
-        aMap.put(2778795080l, "dead orbit");
-        aMap.put(1424722124l, "future war cult");
+        aMap.put(529303302l, "Cryptarch");
+        aMap.put(2161005788l, "Iron Banner");
+        aMap.put(452808717l, "Queen");
+        aMap.put(3233510749l, "Vanguard");
+        aMap.put(1357277120l, "Crucible");
+        aMap.put(2778795080l, "Dead Orbit");
+        aMap.put(1424722124l, "Future War Cult");
         hashes = Collections.unmodifiableMap(aMap);
     }
 
