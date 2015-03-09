@@ -9,9 +9,13 @@
     <TextView android:text="@string/psn_id" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewPsnId"
+        android:textSize="22sp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:layout_alignBottom="@+id/editTextPsnId"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <EditText
         android:layout_width="wrap_content"
