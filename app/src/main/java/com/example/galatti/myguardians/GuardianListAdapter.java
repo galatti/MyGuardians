@@ -60,7 +60,8 @@ public class GuardianListAdapter extends BaseAdapter {
         holder.viewLevel.setText(guardians.get(position).getLevel());
         holder.viewTimePlayed.setText(guardians.get(position).getTimePlayed());
         if (holder.viewEmblemPath != null) {
-            new ImageDownloaderTask(holder.viewEmblemPath).execute(guardians.get(position).getEmblemPath());
+            String url = guardians.get(position).getEmblemPath();
+            new ImageDownloaderTask(holder.viewEmblemPath).execute(url);
         }
 
         return convertView;

@@ -140,7 +140,7 @@ public class MainActivity extends ActionBarActivity {
                 if (psnId != null && psnId.length() > 0) {
                     Boolean isSand = psnId.trim().equalsIgnoreCase("sandman_br");
                     if (!isSand.booleanValue()) {
-                        membershipId = getMembershipId(psnId.trim());
+                        membershipId = getMembershipId(psnId.replaceAll("\\s+",""));
                     }
                     if (membershipId != null) {
                         getGuardians(membershipId);
