@@ -50,6 +50,7 @@ public class GuardianListAdapter extends BaseAdapter {
             holder.viewGuardianClass = (TextView) convertView.findViewById(R.id.guardianClass);
             holder.viewLevel = (TextView) convertView.findViewById(R.id.level);
             holder.viewTimePlayed = (TextView) convertView.findViewById(R.id.timePlayed);
+            holder.viewStats = (TextView) convertView.findViewById(R.id.stats);
             holder.viewEmblemPath = (ImageView) convertView.findViewById(R.id.emblemPath);
             convertView.setTag(holder);
         } else {
@@ -59,6 +60,7 @@ public class GuardianListAdapter extends BaseAdapter {
         holder.viewGuardianClass.setText(guardians.get(position).getGuardianClass());
         holder.viewLevel.setText(guardians.get(position).getLevel());
         holder.viewTimePlayed.setText(guardians.get(position).getTimePlayed());
+        holder.viewStats.setText(guardians.get(position).getStats());
         if (holder.viewEmblemPath != null) {
             String url = guardians.get(position).getEmblemPath();
             new ImageDownloaderTask(holder.viewEmblemPath).execute(url);
@@ -71,6 +73,7 @@ public class GuardianListAdapter extends BaseAdapter {
         TextView viewGuardianClass;
         TextView viewLevel;
         TextView viewTimePlayed;
+        TextView viewStats;
         ImageView viewEmblemPath;
     }
 }

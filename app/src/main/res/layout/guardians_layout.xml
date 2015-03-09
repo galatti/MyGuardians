@@ -44,4 +44,15 @@
         android:paddingTop="5dp"
         android:textColor="#343434"
         android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timePlayed"
+        android:layout_toRightOf="@id/emblemPath"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:textColor="#343434"
+        android:textSize="12sp" />
 </RelativeLayout>

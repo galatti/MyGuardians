@@ -12,8 +12,44 @@ public class Guardian {
     private String guardianClass;
     private String level;
     private String timePlayed;
-
     private String emblemPath;
+    private String armor;
+    private String agility;
+    private String recovery;
+
+    public String getStats() {
+        return stats;
+    }
+
+    public void setStats(String stats) {
+        this.stats = stats;
+    }
+
+    private String stats;
+
+    public String getArmor() {
+        return armor;
+    }
+
+    public void setArmor(String armor) {
+        this.armor = armor;
+    }
+
+    public String getAgility() {
+        return agility;
+    }
+
+    public void setAgility(String agility) {
+        this.agility = agility;
+    }
+
+    public String getRecovery() {
+        return recovery;
+    }
+
+    public void setRecovery(String recovery) {
+        this.recovery = recovery;
+    }
 
     private static final Map<Long, String> hashes;
 

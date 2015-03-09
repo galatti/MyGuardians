@@ -101,6 +101,7 @@ public class MainActivity extends ActionBarActivity {
                 guardian.setGuardianClass("No Class");
                 guardian.setLevel("No Light Level");
                 guardian.setTimePlayed("0 hours played");
+                guardian.setStats("Armor: 0 Agility: 0 Recover 0");
                 guardian.setEmblemPath(null);
                 guardians.add(guardian);
             }
@@ -115,6 +116,7 @@ public class MainActivity extends ActionBarActivity {
                 guardian.setGuardianClass("No Class");
                 guardian.setLevel("No Light Level");
                 guardian.setTimePlayed("0 hours played");
+                guardian.setStats("Armor: 0 Agility: 0 Recover 0");
                 guardian.setEmblemPath(null);
                 guardians.set(i, guardian);
             }
@@ -139,9 +141,9 @@ public class MainActivity extends ActionBarActivity {
                 String psnId = arg0[0];
                 if (psnId != null && psnId.length() > 0) {
                     Boolean isSand = psnId.trim().equalsIgnoreCase("sandman_br");
-                    if (!isSand.booleanValue()) {
+                   // if (!isSand.booleanValue()) {
                         membershipId = getMembershipId(psnId.replaceAll("\\s+",""));
-                    }
+                   // }
                     if (membershipId != null) {
                         getGuardians(membershipId);
                     }
@@ -201,6 +203,10 @@ public class MainActivity extends ActionBarActivity {
                     Guardian guardian;
                     JSONObject character;
                     JSONObject characterBase;
+                    JSONObject stats;
+                    JSONObject statArmor;
+                    JSONObject statAgility;
+                    JSONObject statRecover;
                     String token;
                     Long hash;
                     String guardianClass;
@@ -259,6 +265,19 @@ public class MainActivity extends ActionBarActivity {
                         }
 
                         guardian.setEmblemPath("http://www.bungie.net" + character.getString("emblemPath"));
+
+                        stats = characterBase.getJSONObject("stats");
+                        statArmor = stats.getJSONObject("STAT_ARMOR");
+                        statAgility = stats.getJSONObject("STAT_AGILITY");
+                        statRecover = stats.getJSONObject("STAT_RECOVERY");
+
+                        guardian.setArmor(statArmor.getString("value"));
+                        guardian.setAgility(statAgility.getString("value"));
+                        guardian.setRecovery(statRecover.getString("value"));
+
+                        guardian.setStats("Armor: " + guardian.getArmor() +
+                                " Agility: " + guardian.getAgility() +
+                                " Recovery: " + guardian.getRecovery());
 
                         guardians.set(i, guardian);
                     }
