@@ -2,5 +2,5 @@
     <string name="app_name">My Guardians</string>
     <string name="psn_id">PSN ID</string>
     <string name="psn_id_hint">enter your psn id</string>
-    <string name="go">Go</string>
+    <string name="go">GO</string>
 </resources>
