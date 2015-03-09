@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class GuardianListAdapter extends BaseAdapter {
             holder.viewGuardianClass = (TextView) convertView.findViewById(R.id.guardianClass);
             holder.viewLevel = (TextView) convertView.findViewById(R.id.level);
             holder.viewTimePlayed = (TextView) convertView.findViewById(R.id.timePlayed);
+            holder.viewEmblemPath = (ImageView) convertView.findViewById(R.id.emblemPath);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -57,6 +59,10 @@ public class GuardianListAdapter extends BaseAdapter {
         holder.viewGuardianClass.setText(guardians.get(position).getGuardianClass());
         holder.viewLevel.setText(guardians.get(position).getLevel());
         holder.viewTimePlayed.setText(guardians.get(position).getTimePlayed());
+        if (holder.viewEmblemPath != null) {
+            new ImageDownloaderTask(holder.viewEmblemPath).execute(guardians.get(position).getEmblemPath());
+        }
+
         return convertView;
     }
 
@@ -64,5 +70,6 @@ public class GuardianListAdapter extends BaseAdapter {
         TextView viewGuardianClass;
         TextView viewLevel;
         TextView viewTimePlayed;
+        ImageView viewEmblemPath;
     }
 }

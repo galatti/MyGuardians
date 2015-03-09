@@ -5,10 +5,21 @@
     android:orientation="horizontal"
     android:padding="5dip" >
 
+    <ImageView
+        android:id="@+id/emblemPath"
+        android:layout_width="97dp"
+        android:layout_height="97dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/list_placeholder" />
+
     <TextView
         android:id="@+id/guardianClass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/emblemPath"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
         android:textStyle="bold"
         android:typeface="sans" />
 
@@ -17,7 +28,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/guardianClass"
-        android:layout_marginTop="5dip"
+        android:layout_toRightOf="@id/emblemPath"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
         android:textColor="#343434"
         android:textSize="12sp" />
 
@@ -25,9 +38,10 @@
         android:id="@+id/timePlayed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/level"
-        android:layout_alignBottom="@+id/level"
-        android:layout_alignParentRight="true"
+        android:layout_below="@id/level"
+        android:layout_toRightOf="@id/emblemPath"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
         android:textColor="#343434"
         android:textSize="12sp" />
 </RelativeLayout>

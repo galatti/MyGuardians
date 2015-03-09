@@ -13,7 +13,10 @@ public class Guardian {
     private String level;
     private String timePlayed;
 
+    private String emblemPath;
+
     private static final Map<Long, String> hashes;
+
     static {
         Map<Long, String> aMap = new HashMap<Long, String>();
         aMap.put(159615086l, "glimmer");
@@ -64,5 +67,13 @@ public class Guardian {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public String getEmblemPath() {
+        return emblemPath;
+    }
+
+    public void setEmblemPath(String emblemPath) {
+        this.emblemPath = emblemPath;
     }
 }

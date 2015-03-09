@@ -76,9 +76,9 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            activity= this.getActivity();
+            activity = this.getActivity();
 
-            final EditText editTextPsnId = (EditText ) rootView.findViewById(R.id.editTextPsnId);
+            final EditText editTextPsnId = (EditText) rootView.findViewById(R.id.editTextPsnId);
 
             Button buttonGo = (Button) rootView.findViewById(R.id.buttonGo);
             buttonGo.setOnClickListener(new Button.OnClickListener() {
@@ -95,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
 
             initialiseGuardList();
 
-            spinner = (ProgressBar)rootView.findViewById(R.id.progressBar);
+            spinner = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
             return rootView;
         }
@@ -103,11 +103,12 @@ public class MainActivity extends ActionBarActivity {
         private void initialiseGuardList() {
             guardians = new ArrayList<Guardian>();
 
-            for (int i = 0; i <3; i++) {
+            for (int i = 0; i < 3; i++) {
                 Guardian guardian = new Guardian();
                 guardian.setGuardianClass("No Class");
                 guardian.setLevel("No Light Level");
                 guardian.setTimePlayed("0 hours played");
+                guardian.setEmblemPath(null);
                 guardians.add(guardian);
             }
             adapter = new GuardianListAdapter(activity, guardians);
@@ -116,11 +117,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         private void resetGuardList() {
-            for (int i = 0; i <3; i++) {
+            for (int i = 0; i < 3; i++) {
                 Guardian guardian = (Guardian) guardians.get(i);
                 guardian.setGuardianClass("No Class");
                 guardian.setLevel("No Light Level");
                 guardian.setTimePlayed("0 hours played");
+                guardian.setEmblemPath(null);
                 guardians.set(i, guardian);
             }
         }
@@ -142,12 +144,12 @@ public class MainActivity extends ActionBarActivity {
             protected String doInBackground(String... arg0) {
 
                 String psnId = arg0[0];
-                if (psnId!= null && psnId.length() > 0) {
+                if (psnId != null && psnId.length() > 0) {
                     Boolean isSand = psnId.trim().equalsIgnoreCase("sandman_br");
                     if (!isSand.booleanValue()) {
                         membershipId = getMembershipId(psnId.trim());
                     }
-                    if (membershipId!= null) {
+                    if (membershipId != null) {
                         getGuardians(membershipId);
                     }
                 }
@@ -197,11 +199,9 @@ public class MainActivity extends ActionBarActivity {
 
                     // get json string from url
                     JSONObject json = jParser.getJSONFromUrl(yourJsonStringUrl);
-                    //Log.e(TAG, "*** json  *** = \n" + json.toString(3));
                     JSONObject response = json.getJSONObject("Response");
-                    //Log.e(TAG, "*** response *** = \n" + response.toString(3));
                     JSONObject data = response.getJSONObject("data");
-                    //Log.e(TAG, "*** data *** = \n" + data.toString(3));
+
 
 
                     dataJsonArr = data.getJSONArray("characters");
@@ -215,14 +215,14 @@ public class MainActivity extends ActionBarActivity {
 
                     for (int i = 0; i < dataJsonArr.length(); i++) {
 
-                        guardianClass= "";
+                        guardianClass = "";
                         character = dataJsonArr.getJSONObject(i);
 
                         // show the values in our logcat
                         characterBase = character.getJSONObject("characterBase");
                         Log.e(TAG, "characterId: " + characterBase.getString("characterId"));
 
-                        guardian = (Guardian)guardians.get(i);
+                        guardian = (Guardian) guardians.get(i);
 
                         token = characterBase.getString("raceHash");
                         if (token != null) {
@@ -249,7 +249,7 @@ public class MainActivity extends ActionBarActivity {
                         if (token != null) {
                             Integer level = new Integer(token);
                             if (level != null) {
-                                if (level < 1) {
+                                if (level <= 1) {
                                     guardian.setLevel("No Light Level");
                                 } else {
                                     guardian.setLevel("Light Level " + level.toString());
@@ -258,13 +258,14 @@ public class MainActivity extends ActionBarActivity {
                         }
 
 
-
                         token = characterBase.getString("minutesPlayedTotal");
                         if (token != null) {
                             timePlayed = new Long(token);
                             timePlayed = timePlayed / 60;
-                            guardian.setTimePlayed("Played " + timePlayed.toString() + " hours" );
+                            guardian.setTimePlayed("Played " + timePlayed.toString() + " hours");
                         }
+
+                        guardian.setEmblemPath("http://www.bungie.net" + character.getString("emblemPath"));
 
                         guardians.set(i, guardian);
                     }
