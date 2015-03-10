@@ -141,9 +141,9 @@ public class MainActivity extends ActionBarActivity {
                 String psnId = arg0[0];
                 if (psnId != null && psnId.length() > 0) {
                     Boolean isSand = psnId.trim().equalsIgnoreCase("sandman_br");
-                   // if (!isSand.booleanValue()) {
+                   if (!isSand.booleanValue()) {
                         membershipId = getMembershipId(psnId.replaceAll("\\s+",""));
-                   // }
+                   }
                     if (membershipId != null) {
                         getGuardians(membershipId);
                     }

@@ -21,6 +21,8 @@ import java.lang.ref.WeakReference;
 class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
     private final WeakReference imageViewReference;
 
+    private static MemoryCache cache = new MemoryCache();
+
     public ImageDownloaderTask(ImageView imageView) {
         imageViewReference = new WeakReference(imageView);
     }
@@ -55,45 +57,57 @@ class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     static Bitmap downloadBitmap(String url) {
+        Bitmap bitmap = null;
+
+        Log.w("ImageDownloader", "Target URL " + url);
 
         if(url != null) {
-            final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-            final HttpGet getRequest = new HttpGet(url);
-            try {
-                HttpResponse response = client.execute(getRequest);
-                final int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode != HttpStatus.SC_OK) {
-                    Log.w("ImageDownloader", "Error " + statusCode
-                            + " while retrieving bitmap from " + url);
-                    return null;
-                }
+            bitmap = cache.get(url);
 
-                final HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    InputStream inputStream = null;
-                    try {
-                        inputStream = entity.getContent();
-                        final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                        return bitmap;
-                    } finally {
-                        if (inputStream != null) {
-                            inputStream.close();
+            if(bitmap == null) {
+                final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+                final HttpGet getRequest = new HttpGet(url);
+                try {
+                    HttpResponse response = client.execute(getRequest);
+                    final int statusCode = response.getStatusLine().getStatusCode();
+                    if (statusCode != HttpStatus.SC_OK) {
+                        Log.w("ImageDownloader", "Error " + statusCode
+                                + " while retrieving bitmap from " + url);
+                        return null;
+                    }
+
+                    final HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = entity.getContent();
+                            bitmap = BitmapFactory.decodeStream(inputStream);
+                            cache.put(url, bitmap);
+                            Log.w("ImageDownloader", "Buffered: " + url);
+                        } finally {
+                            if (inputStream != null) {
+                                inputStream.close();
+                            }
+                            entity.consumeContent();
                         }
-                        entity.consumeContent();
+                    }
+                } catch (Exception e) {
+                    // Could provide a more explicit error message for IOException or
+                    // IllegalStateException
+                    getRequest.abort();
+                    Log.w("ImageDownloader", "Error while retrieving bitmap from " + url);
+                } finally {
+                    if (client != null) {
+                        client.close();
                     }
                 }
-            } catch (Exception e) {
-                // Could provide a more explicit error message for IOException or
-                // IllegalStateException
-                getRequest.abort();
-                Log.w("ImageDownloader", "Error while retrieving bitmap from " + url);
-            } finally {
-                if (client != null) {
-                    client.close();
-                }
+            } else {
+                Log.w("ImageDownloader", "Retrieved from buffer: " + url);
             }
         }
-        return null;
+        return bitmap;
     }
+
+
 
 }
